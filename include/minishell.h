@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   token.h                                            :+:      :+:    :+:   */
+/*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,13 +11,15 @@
 /* ************************************************************************** */
 
 #ifndef	MINISHELL_H
-#define	MINISHELL_H 
+#define	MINISHELL_H
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <limits.h>
-#include "libftprintf.h"
+#include <stdbool.h>
+#include <errno.h>
+#include "libft.h"
 
 
 typedef struct	s_token
