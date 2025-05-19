@@ -31,11 +31,15 @@ typedef struct	s_token
 
 typedef enum	s_type
 {
+	EMPTY,
 	CMD,
 	BUILD_IN,
 	ARGUMENT,
 	PIPE,
-	REDIRECTION,
+	TRUNC,
+	INPUT,
+	APPEND,
+	HEREDOC,
 	FD,
 } t_type;
 

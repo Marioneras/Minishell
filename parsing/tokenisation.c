@@ -37,9 +37,9 @@ static char	is_sep(char c, char *token, bool is_inside_quote)
 	if (c == ' ' || (c >= '\t' && c <= '\r'))
 		return (true);
 	if ((c == '|' || c == '<' || c == '>')
-	 && (*token != '|' || *token != '<' || *token != '>'))
+	 && (*token != '|' && *token != '<' && *token != '>'))
 		return (true);
-	if ((c != '|' || c != '<' || c != '>')
+	if ((c != '|' && c != '<' && c != '>')
 	 && (*token == '|' || *token == '<' || *token == '>'))
 		return (true);
 	else
@@ -87,8 +87,10 @@ static t_token	*get_token(char **str)
 	is_inside_quote = false;
 	while (**str)
 	{
-		if (**str == '"' || **str == 39)
+		if ((**str == '"' || **str == 39) && !is_inside_quote)
 			is_inside_quote = true;
+		else if ((**str == '"' || **str == 39) && is_inside_quote)
+			is_inside_quote = false;
 		if (is_sep(**str, new_token->name, is_inside_quote))
 		{
 			while (**str == ' ' || (**str >= '\t' && **str <= '\r'))
@@ -99,6 +101,22 @@ static t_token	*get_token(char **str)
 		(*str)++;
 	}
 	return (new_token);
+}
+
+void	find_type(t_token *token)
+{
+	if (!token->name)
+		token->type = EMPTY;
+	else if (ft_strncmp(token->name, "|", 2) == 0)
+		token->type = PIPE;
+	else if (ft_strncmp(token->name, ">", 2) == 0)
+		token->type = TRUNC;
+	else if (ft_strncmp(token->name, "<", 2) == 0)
+		token->type = INPUT;
+	else if (ft_strncmp(token->name, ">>", 3) == 0)
+		token->type = APPEND;
+	else if (ft_strncmp(token->name, "<<", 3) == 0)
+		token->type = HEREDOC;
 }
 
 t_token	*tokenize(char *str)
@@ -115,7 +133,7 @@ t_token	*tokenize(char *str)
 		if (!new_token)
 			return (NULL);
 		append_token(head, new_token);
-		/* token_type(new_token); */
+		find_type(new_token);
 		new_token = new_token->next;
 	}
 	return (head);
@@ -130,14 +148,26 @@ void	print_list(t_token *list)
 	{
 		printf("------------------------\n");
 		printf("%s\n", current_node->name);
-		if (current_node->type == CMD)
+		if (current_node->type == EMPTY)
+			printf("type: EMPTY\n");
+		else if (current_node->type == CMD)
 			printf("type: COMMANDE EXTERNE\n");
 		else if (current_node->type == BUILD_IN)
 			printf("type: BUILD-IN\n");
 		else if (current_node->type == ARGUMENT)
 			printf("type: ARGUMENT\n");
-		else
-			printf("type: OPERATOR\n");
+		else if (current_node->type == PIPE)
+			printf("type: PIPE\n");
+		else if (current_node->type == TRUNC)
+			printf("type: TRUNC\n");
+		else if (current_node->type == INPUT)
+			printf("type: INPUT\n");
+		else if (current_node->type == APPEND)
+			printf("type: APPEND\n");
+		else if (current_node->type == HEREDOC)
+			printf("type: HEREDOC\n");
+		else if (current_node->type == FD)
+			printf("type: FD\n");
 		current_node = current_node->next;
 	}
 }
