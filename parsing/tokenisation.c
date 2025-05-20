@@ -6,7 +6,7 @@
 /*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 10:34:57 by mberthou          #+#    #+#             */
-/*   Updated: 2025/05/16 17:15:23 by mberthou         ###   ########.fr       */
+/*   Updated: 2025/05/20 19:53:07 by mberthou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,14 @@ static t_token	*append_token(t_token *head, t_token *node)
 		while (current_node->next)
 			current_node = current_node->next;
 		current_node->next = node;
+		node->previous = current_node;
 	}
 	return (head);
 }
 
-static char	is_sep(char c, char *token, bool is_inside_quote)
+static char	is_sep(char c, char *token, bool track_s_quote, bool track_d_quote)
 {
-	if (is_inside_quote == true || !token)
+	if ((track_s_quote == true || track_d_quote) || !token)
 		return (false);
 	if (c == ' ' || (c >= '\t' && c <= '\r'))
 		return (true);
@@ -75,23 +76,34 @@ static char	*str_append(char const *src, char c)
 	return (str);
 }
 
+static void	check_quotes(char c, bool *s_quote, bool *d_quote)
+{
+	if (c == '"' && !*d_quote)
+		*d_quote = true;
+	else if (c == 39 && !*s_quote)
+		*s_quote = true;
+	else if (c == '"' && *d_quote)
+		*d_quote = false;
+	else if (c == 39 && *s_quote)
+		*s_quote = false;
+}
+
 static t_token	*get_token(char **str)
 {
 	t_token	*new_token;
-	bool	is_inside_quote;
+	bool	track_s_quote;
+	bool	track_d_quote;
 
 	new_token = (t_token *)malloc(sizeof(t_token));
 	if (!new_token)
 		return (NULL);
 	new_token->type = 0;
-	is_inside_quote = false;
+	track_s_quote = false;
+	track_d_quote = false;
 	while (**str)
 	{
-		if ((**str == '"' || **str == 39) && !is_inside_quote)
-			is_inside_quote = true;
-		else if ((**str == '"' || **str == 39) && is_inside_quote)
-			is_inside_quote = false;
-		if (is_sep(**str, new_token->name, is_inside_quote))
+		check_quotes(**str, &track_s_quote, &track_d_quote);
+		if (is_sep(**str, new_token->name, track_s_quote, track_d_quote))
 		{
 			while (**str == ' ' || (**str >= '\t' && **str <= '\r'))
 				(*str)++;
@@ -117,6 +129,16 @@ void	find_type(t_token *token)
 		token->type = APPEND;
 	else if (ft_strncmp(token->name, "<<", 3) == 0)
 		token->type = HEREDOC;
+	else if (!token->previous || token->previous->type == PIPE
+		|| token->previous->type == FD)
+		token->type = CMD;
+	else if (token->previous->type == HEREDOC)
+		token->type = LIMITER;
+	else if (token->previous->type == TRUNC || token->previous->type == APPEND
+		|| token->previous->type == INPUT)
+		token->type = FD;
+	else
+		token->type = ARGUMENT;
 }
 
 t_token	*tokenize(char *str)
@@ -125,6 +147,7 @@ t_token	*tokenize(char *str)
 	t_token	*new_token;
 
 	head = get_token(&str);
+	find_type(head);
 	if (!head)
 		return (NULL);
 	while (*str)
@@ -151,9 +174,7 @@ void	print_list(t_token *list)
 		if (current_node->type == EMPTY)
 			printf("type: EMPTY\n");
 		else if (current_node->type == CMD)
-			printf("type: COMMANDE EXTERNE\n");
-		else if (current_node->type == BUILD_IN)
-			printf("type: BUILD-IN\n");
+			printf("type: COMMANDE\n");
 		else if (current_node->type == ARGUMENT)
 			printf("type: ARGUMENT\n");
 		else if (current_node->type == PIPE)
@@ -166,8 +187,10 @@ void	print_list(t_token *list)
 			printf("type: APPEND\n");
 		else if (current_node->type == HEREDOC)
 			printf("type: HEREDOC\n");
+		else if (current_node->type == LIMITER)
+			printf("type: LIMITER\n");
 		else if (current_node->type == FD)
-			printf("type: FD\n");
+			printf("type: FILE\n");
 		current_node = current_node->next;
 	}
 }

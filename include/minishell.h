@@ -6,7 +6,7 @@
 /*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 10:43:33 by mberthou          #+#    #+#             */
-/*   Updated: 2025/05/16 17:15:26 by mberthou         ###   ########.fr       */
+/*   Updated: 2025/05/20 19:53:04 by mberthou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,19 +27,20 @@ typedef struct	s_token
 	char			*name;
 	int				type;
 	struct s_token	*next;
+	struct s_token	*previous;
 }	t_token;
 
 typedef enum	s_type
 {
 	EMPTY,
 	CMD,
-	BUILD_IN,
 	ARGUMENT,
 	PIPE,
 	TRUNC,
 	INPUT,
 	APPEND,
 	HEREDOC,
+	LIMITER,
 	FD,
 } t_type;
 
