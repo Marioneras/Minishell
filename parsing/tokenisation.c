@@ -198,11 +198,21 @@ void	print_list(t_token *list)
 int main(int argc, char **argv)
 {
 	t_token	*list;
+	int		i;
 
 	(void)argc;
 	list = tokenize(argv[1]);
 	if (!list)
 		exit(1);
-	print_list(list);
+	i = 0;
+	i = check_syntax(list);
+	if (i == PIPE_ERROR)
+		return (printf("minishell: syntax error near unexpected token |\n"), 2);
+	else if (i == MISSING_FILENAME)
+		return(printf("minishell: syntax error near unexpected token newline\n"), 2);
+	else if (i == INVALID_OPERATOR)
+		return (printf("minishell: syntax error near unexpected token >>\n"), 2);
+	else
+		print_list(list);
 	return (0);
 }
