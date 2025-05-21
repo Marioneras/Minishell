@@ -12,40 +12,40 @@
 
 #include "minishell.h"
 
-int	check_pipe(t_token *current)
-{
-	if (!current->previous || !current->next)
-		return (1);
-	return (0);
-}
-
-int	check_redirections(t_token *current)
-{
-	if (!current->next)
-		return (1);
-	if (current->type == HEREDOC && (current->next->type == HEREDOC
-		|| current->previous->type == HEREDOC))
-		return (1);
-	if (current->next->type == PIPE)
-		return (1);
-	return (0);
-}
-
-int	check_double(t_token *head)
-{
-	t_token *current;
-
-	current = head;
-	while (current)
-	{
-		if (ft_strncmp(current->name, "|", 2) == 0
-			|| ft_strncmp(current->name, "<<", 3) == 0
-			|| ft_strncmp(current->name, ">>", 3) == 0)
-			return (1);
-		current = current->next;
-	}
-	return (0);
-}
+/* int	check_pipe(t_token *current) */
+/* { */
+/* 	if (!current->previous || !current->next) */
+/* 		return (1); */
+/* 	return (0); */
+/* } */
+/**/
+/* int	check_redirections(t_token *current) */
+/* { */
+/* 	if (!current->next) */
+/* 		return (1); */
+/* 	if (current->type == HEREDOC && (current->next->type == HEREDOC */
+/* 		|| current->previous->type == HEREDOC)) */
+/* 		return (1); */
+/* 	if (current->next->type == PIPE) */
+/* 		return (1); */
+/* 	return (0); */
+/* } */
+/**/
+/* int	check_double(t_token *head) */
+/* { */
+/* 	t_token *current; */
+/**/
+/* 	current = head; */
+/* 	while (current) */
+/* 	{ */
+/* 		if (ft_strncmp(current->name, "|", 2) == 0 */
+/* 			|| ft_strncmp(current->name, "<<", 3) == 0 */
+/* 			|| ft_strncmp(current->name, ">>", 3) == 0) */
+/* 			return (1); */
+/* 		current = current->next; */
+/* 	} */
+/* 	return (0); */
+/* } */
 
 int	check_syntax(t_token *head)
 {
