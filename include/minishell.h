@@ -48,7 +48,10 @@ typedef enum e_error
 	Q_ERROR = -1,
 	PIPE_ERROR = -2,
 	MISSING_FILENAME = -3,
-	INVALID_OPERATOR = -4,
+	INVALID_OPERATOR_< = -4,
+	INVALID_OPERATOR_<< = -5,
+	INVALID_OPERATOR_> = -6,
+	INVALID_OPERATOR_>> = -7,
 }					t_error;
 
 typedef struct s_env

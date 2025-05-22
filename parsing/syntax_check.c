@@ -12,40 +12,16 @@
 
 #include "minishell.h"
 
-/* int	check_pipe(t_token *current) */
-/* { */
-/* 	if (!current->previous || !current->next) */
-/* 		return (1); */
-/* 	return (0); */
-/* } */
-/**/
-/* int	check_redirections(t_token *current) */
-/* { */
-/* 	if (!current->next) */
-/* 		return (1); */
-/* 	if (current->type == HEREDOC && (current->next->type == HEREDOC */
-/* 		|| current->previous->type == HEREDOC)) */
-/* 		return (1); */
-/* 	if (current->next->type == PIPE) */
-/* 		return (1); */
-/* 	return (0); */
-/* } */
-/**/
-/* int	check_double(t_token *head) */
-/* { */
-/* 	t_token *current; */
-/**/
-/* 	current = head; */
-/* 	while (current) */
-/* 	{ */
-/* 		if (ft_strncmp(current->name, "|", 2) == 0 */
-/* 			|| ft_strncmp(current->name, "<<", 3) == 0 */
-/* 			|| ft_strncmp(current->name, ">>", 3) == 0) */
-/* 			return (1); */
-/* 		current = current->next; */
-/* 	} */
-/* 	return (0); */
-/* } */
+bool	check_pipe(t_token *current)
+{
+	if (!current->previous || !current->next)
+		return (false);
+	if (current->previous->type == PIPE || current->next->type == PIPE)
+		return (false);
+	return (true);
+}
+
+
 
 int	check_syntax(t_token *head)
 {
@@ -56,7 +32,7 @@ int	check_syntax(t_token *head)
 	current = head;
 	while (current)
 	{
-		if (current->type == PIPE && (!current->previous || !current->next))
+		if (current->type == PIPE && !check_pipe(current))
 			return (PIPE_ERROR);
 		if (current->name[0] == '|' && current->type != PIPE)
 			return (PIPE_ERROR);

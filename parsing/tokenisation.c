@@ -211,7 +211,7 @@ int main(int argc, char **argv)
 	else if (i == MISSING_FILENAME)
 		return(printf("minishell: syntax error near unexpected token `newline`\n"), 2);
 	else if (i == INVALID_OPERATOR)
-		return (printf("minishell: syntax error near unexpected token `>>`\n"), 2);
+		return (2);
 	else
 		print_list(list);
 	return (0);
