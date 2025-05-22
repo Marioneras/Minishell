@@ -6,7 +6,7 @@
 /*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 10:34:57 by mberthou          #+#    #+#             */
-/*   Updated: 2025/05/20 19:53:07 by mberthou         ###   ########.fr       */
+/*   Updated: 2025/05/22 19:01:46 by mberthou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ static char	*str_append(char const *src, char c)
 		if (!str)
 			return (NULL);
 		*str = c;
+		str[1] = '\0';
 		return (str);
 	}
 	str = (char *)malloc(sizeof(char) * (ft_strlen(src) + 2));
@@ -76,7 +77,7 @@ static char	*str_append(char const *src, char c)
 	return (str);
 }
 
-static void	check_quotes(char c, bool *s_quote, bool *d_quote)
+static void	validate_quotes(char c, bool *s_quote, bool *d_quote)
 {
 	if (c == '"' && !*d_quote)
 		*d_quote = true;
@@ -98,11 +99,14 @@ static t_token	*get_token(char **str)
 	if (!new_token)
 		return (NULL);
 	new_token->type = 0;
+	new_token->previous = NULL;
+	new_token->next = NULL;
+	new_token->name = NULL;
 	track_s_quote = false;
 	track_d_quote = false;
 	while (**str)
 	{
-		check_quotes(**str, &track_s_quote, &track_d_quote);
+		validate_quotes(**str, &track_s_quote, &track_d_quote);
 		if (is_sep(**str, new_token->name, track_s_quote, track_d_quote))
 		{
 			while (**str == ' ' || (**str >= '\t' && **str <= '\r'))
@@ -115,7 +119,7 @@ static t_token	*get_token(char **str)
 	return (new_token);
 }
 
-void	find_type(t_token *token)
+static void	find_type(t_token *token)
 {
 	if (!token->name)
 		token->type = EMPTY;
@@ -129,7 +133,9 @@ void	find_type(t_token *token)
 		token->type = APPEND;
 	else if (ft_strncmp(token->name, "<<", 3) == 0)
 		token->type = HEREDOC;
-	else if (!token->previous || token->previous->type == PIPE
+	else if (!token->previous )
+		token->type = CMD;
+	else if (token->previous->type == PIPE
 		|| token->previous->type == FD)
 		token->type = CMD;
 	else if (token->previous->type == HEREDOC)
@@ -193,26 +199,4 @@ void	print_list(t_token *list)
 			printf("type: FILE\n");
 		current_node = current_node->next;
 	}
-}
-
-int main(int argc, char **argv)
-{
-	t_token	*list;
-	int		i;
-
-	(void)argc;
-	list = tokenize(argv[1]);
-	if (!list)
-		exit(1);
-	i = 0;
-	i = check_syntax(list);
-	if (i == PIPE_ERROR)
-		return (printf("minishell: syntax error near unexpected token `|`\n"), 2);
-	else if (i == MISSING_FILENAME)
-		return(printf("minishell: syntax error near unexpected token `newline`\n"), 2);
-	else if (i == INVALID_OPERATOR)
-		return (2);
-	else
-		print_list(list);
-	return (0);
 }

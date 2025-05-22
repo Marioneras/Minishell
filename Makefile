@@ -6,7 +6,7 @@
 #    By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/18 14:38:01 by mberthou          #+#    #+#              #
-#    Updated: 2025/04/26 18:27:30 by mberthou         ###   ########.fr        #
+#    Updated: 2025/05/22 18:18:08 by mberthou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@
 #                                     CONFIG                                   #
 ################################################################################
 
-NAME = Minishell 
+NAME = minishell
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -ggdb3
 DFLAGS = -MMD -MF $(@:.o=.d)
@@ -28,8 +28,9 @@ NOVISU = 0 #1 = no progress bar (usefull when tty is not available)
 ################################################################################
 
 FILE_EXTENSION = .c
-SRCS = parsing/syntax_check.c parsing/tokenisation.c
-INCLUDES = -Iinclude -Ilibft
+SRCS = srcs/main_loop.c parsing/check_quote.c parsing/syntax_check.c \
+	   parsing/tokenisation.c
+INCLUDES = -I./include -I./libft
 LIBFT = -L./libft -lft
 
 ################################################################################
@@ -215,7 +216,7 @@ endif
  -include $(DEPS) $(DEPS_MAIN)
 $(NAME): $(OBJS)
 	@$(call display_progress_bar)
-	@$(call run_and_test,$(CC) $(CFLAGS) $(DFLAGS) $(INCLUDES) $(OBJS) -o $(NAME) $(LIBFT))
+	@$(call run_and_test,$(CC) $(CFLAGS) $(DFLAGS) $(INCLUDES) $(OBJS) -lreadline -o $(NAME) $(LIBFT))
 	@echo "Program compiled successfully to Minishell."
 
 setup:

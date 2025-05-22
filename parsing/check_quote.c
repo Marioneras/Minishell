@@ -1,8 +1,16 @@
-#include <unistd.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <stdio.h>
-#include <stdlib.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   check_quote.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/22 18:09:05 by mberthou          #+#    #+#             */
+/*   Updated: 2025/05/22 18:15:53 by mberthou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
 
 void	quote_error(char *str)
 {
@@ -21,7 +29,7 @@ int	in_double(char **str)
 		if (**str == 34)
 		{
 			//(*str)++;
-			return (1);	
+			return (1);
 		}
 		(*str)++;
 	}
@@ -48,6 +56,7 @@ int	is_there_quote(char *str)
 	int	count;
 	int	i;
 
+	count = 0;
 	i = 0;
 	while(str[i] != '\0')
 	{
@@ -57,8 +66,7 @@ int	is_there_quote(char *str)
 	}
 	if (count == 0)
 		return (0);
-	if (count != 0)
-		return(1);
+	return(1);
 }
 
 int	check_quotes(char *str)
@@ -88,7 +96,7 @@ int	check_quotes(char *str)
 		//return(Q_ERROR(127))
 	if (result == 0)
 		return (0);
-	if (result == 1)
+	else
 		return (1);
 }
 /*

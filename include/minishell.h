@@ -6,7 +6,7 @@
 /*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 10:43:33 by mberthou          #+#    #+#             */
-/*   Updated: 2025/05/20 19:53:04 by mberthou         ###   ########.fr       */
+/*   Updated: 2025/05/22 19:01:53 by mberthou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,9 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <signal.h>
 
 typedef struct s_token
 {
@@ -48,10 +51,10 @@ typedef enum e_error
 	Q_ERROR = -1,
 	PIPE_ERROR = -2,
 	MISSING_FILENAME = -3,
-	INVALID_OPERATOR_< = -4,
-	INVALID_OPERATOR_<< = -5,
-	INVALID_OPERATOR_> = -6,
-	INVALID_OPERATOR_>> = -7,
+	INVALID_OPERATOR = -4,
+	/* INVALID_OPERATOR_<< = -5, */
+	/* INVALID_OPERATOR_> = -6, */
+	/* INVALID_OPERATOR_>> = -7, */
 }					t_error;
 
 typedef struct s_env
@@ -103,7 +106,14 @@ typedef struct s_buildin
 	int				(*function)(char **argv, t_obj *obj);
 }					t_buildin;
 
+/* ********* srcs ************* */
+int		main(int argc, char *argv[], char **envp);
+
 /* ********* parsing ********** */
-int	check_syntax(t_token *head);
+void	quote_error(char *str);
+int		check_quotes(char *str);
+t_token	*tokenize(char *str);
+int		check_syntax(t_token *head);
+void	print_list(t_token *list);
 
 #endif
