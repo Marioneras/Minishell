@@ -6,7 +6,7 @@
 /*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:36:22 by mberthou          #+#    #+#             */
-/*   Updated: 2025/05/22 19:01:51 by mberthou         ###   ########.fr       */
+/*   Updated: 2025/05/23 19:31:24 by mberthou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	init_signal()
 	struct	sigaction	sa;
 	sa.sa_sigaction = ctrl_c;
 	sa.sa_flags = SA_SIGINFO;
+	sigemptyset(&sa.sa_mask);
 	sigaction (SIGINT, &sa, NULL);
 }
 
@@ -61,6 +62,7 @@ int	main(int argc, char *argv[], char **envp)
 					printf("minishell: syntax error near unexpected token `newline'\n");
 				else if (exit_code != INVALID_OPERATOR)
 					print_list(token_list);
+				free_list(token_list);
 			}
 			else if (check_quotes(command) == 0)
 				quote_error(command);

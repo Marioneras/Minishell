@@ -6,7 +6,7 @@
 /*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 10:34:57 by mberthou          #+#    #+#             */
-/*   Updated: 2025/05/22 19:01:46 by mberthou         ###   ########.fr       */
+/*   Updated: 2025/05/23 19:31:22 by mberthou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,14 @@ static void	validate_quotes(char c, bool *s_quote, bool *d_quote)
 		*s_quote = false;
 }
 
+static void	initialize_tolkien(t_token *token)
+{
+	new_token->type = 0;
+	new_token->previous = NULL;
+	new_token->next = NULL;
+	new_token->name = NULL;
+}
+
 static t_token	*get_token(char **str)
 {
 	t_token	*new_token;
@@ -98,10 +106,7 @@ static t_token	*get_token(char **str)
 	new_token = (t_token *)malloc(sizeof(t_token));
 	if (!new_token)
 		return (NULL);
-	new_token->type = 0;
-	new_token->previous = NULL;
-	new_token->next = NULL;
-	new_token->name = NULL;
+	initialize_tolkien(new_token);
 	track_s_quote = false;
 	track_d_quote = false;
 	while (**str)

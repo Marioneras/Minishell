@@ -6,7 +6,7 @@
 /*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 10:43:33 by mberthou          #+#    #+#             */
-/*   Updated: 2025/05/22 19:01:53 by mberthou         ###   ########.fr       */
+/*   Updated: 2025/05/23 19:14:24 by mberthou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,5 +115,8 @@ int		check_quotes(char *str);
 t_token	*tokenize(char *str);
 int		check_syntax(t_token *head);
 void	print_list(t_token *list);
+
+/* ***** cleanup function ***** */
+void	free_list(t_token *token);
 
 #endif
