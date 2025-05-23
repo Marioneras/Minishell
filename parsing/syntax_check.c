@@ -21,7 +21,32 @@ bool	check_pipe(t_token *current)
 	return (true);
 }
 
+char	*check_redirection(t_token *current)
+{
+	if (current->previous)
+	{
+			if (current->previous->type == TRUNC
+			|| current->previous->type == APPEND
+			|| current->previous->type == INPUT
+			|| current->previous->type == HEREDOC)
+			return (current->name);
+	}
+	return ("OK");
+}
 
+int	redirection_error(char *str)
+{
+	ft_putstr_fd("mafiyashell: syntax error near unexpected token `", 2);
+	if(ft_strlen(str) >= 2)
+	{
+		ft_putchar_fd(*str, 2);
+		ft_putchar_fd(*str, 2);
+	}
+	else
+		ft_putchar_fd(*str, 2);
+	ft_putstr_fd("'\n", 2);
+	return (INVALID_OPERATOR);
+}
 
 int	check_syntax(t_token *head)
 {
@@ -38,17 +63,16 @@ int	check_syntax(t_token *head)
 			return (PIPE_ERROR);
 		if ((current->type == TRUNC || current->type == APPEND
 			|| current->type == INPUT || current->type == HEREDOC)
-			&& !current->next)
-			 return (MISSING_FILENAME);
-		if ((current->type == TRUNC || current->type == APPEND
-			|| current->type == INPUT || current->type == HEREDOC)
-			&& (current->previous->type == TRUNC || current->previous->type == APPEND
-			|| current->previous->type == INPUT || current->previous->type == HEREDOC))
-			return (INVALID_OPERATOR);
+			&& ft_strncmp(check_redirection(current), "OK", 3) != 0)
+			return (redirection_error(check_redirection(current)));
 		if ((current->name[0] == '<' && (current->type != INPUT
 			&& current->type != HEREDOC)) || (current->name[0] == '>'
 			&& (current->type != TRUNC && current->type != APPEND)))
-			return (INVALID_OPERATOR);
+			return (redirection_error(current->name));
+		if ((current->type == TRUNC || current->type == APPEND
+			|| current->type == INPUT || current->type == HEREDOC)
+			&& !current->next)
+			 return (MISSING_FILENAME);
 		current = current->next;
 	}
 	return (EXIT_SUCCESS);

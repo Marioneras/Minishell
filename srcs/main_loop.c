@@ -56,12 +56,10 @@ int	main(int argc, char *argv[], char **envp)
 				token_list = tokenize(command);
 				exit_code = check_syntax(token_list);
 				if (exit_code == PIPE_ERROR)
-					return (printf("minishell: syntax error near unexpected token `|`\n"), 2);
+					printf("minishell: syntax error near unexpected token `|'\n");
 				else if (exit_code == MISSING_FILENAME)
-					return(printf("minishell: syntax error near unexpected token `newline`\n"), 2);
-				else if (exit_code == INVALID_OPERATOR)
-					return (printf("minishell: syntax error near unexpected token `>>`\n"), 2);
-				else
+					printf("minishell: syntax error near unexpected token `newline'\n");
+				else if (exit_code != INVALID_OPERATOR)
 					print_list(token_list);
 			}
 			else if (check_quotes(command) == 0)
