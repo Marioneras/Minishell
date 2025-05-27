@@ -6,7 +6,7 @@
 /*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 10:34:57 by mberthou          #+#    #+#             */
-/*   Updated: 2025/05/23 19:31:22 by mberthou         ###   ########.fr       */
+/*   Updated: 2025/05/27 13:38:45 by safamran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ static void	validate_quotes(char c, bool *s_quote, bool *d_quote)
 		*s_quote = false;
 }
 
-static void	initialize_tolkien(t_token *token)
+static void	initialize_tolkien(t_token *new_token)
 {
 	new_token->type = 0;
 	new_token->previous = NULL;

@@ -6,7 +6,7 @@
 /*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:36:22 by mberthou          #+#    #+#             */
-/*   Updated: 2025/05/23 19:31:24 by mberthou         ###   ########.fr       */
+/*   Updated: 2025/05/27 13:45:00 by safamran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,30 @@ void	init_signal()
 	sigaction (SIGINT, &sa, NULL);
 }
 
+int	is_only_space(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (!str)
+		return (1);
+	while(str[i] != '\0')
+	{
+		if (str[i] != ' ')
+			return (0);
+		i++;
+	}
+	return(1);
+}
+
+void	just_enter(void)
+{
+	//write(1, "\n", 1);
+	rl_replace_line("", 0);
+	rl_on_new_line();
+	//rl_redisplay();
+}
+
 int	main(int argc, char *argv[], char **envp)
 {
 	t_token	*token_list;
@@ -52,7 +76,9 @@ int	main(int argc, char *argv[], char **envp)
 				exit (0); // + free machin
 			add_history(command);
 			exit_code = 0;
-			if (check_quotes(command) == 1)
+			if (is_only_space(command) == 1)
+				just_enter();
+			else if (check_quotes(command) == 1)
 			{
 				token_list = tokenize(command);
 				exit_code = check_syntax(token_list);
