@@ -33,8 +33,21 @@ static t_token	*append_token(t_token *head, t_token *node)
 
 static char	is_sep(char c, char *token, bool track_s_quote, bool track_d_quote)
 {
-	if ((track_s_quote == true || track_d_quote) || !token)
+	int	len;
+
+	if (!token)
 		return (false);
+	len = ft_strlen(token);
+	if (((c == 39 && track_s_quote) || (c == '"' && track_d_quote)) && token)
+		return (true);
+	if (track_s_quote || track_d_quote)
+		return (false);
+	if ((!track_s_quote && !track_d_quote)
+		&& ((token[len - 1] == '"' && c == '"')
+		|| (token[len - 1] == '\'' && c == '\'')))
+		return (false);
+	if ((!track_s_quote && !track_d_quote) && (token[len - 1] == '"' || token[len - 1] == '\''))
+		return (true);
 	if (c == ' ' || (c >= '\t' && c <= '\r'))
 		return (true);
 	if ((c == '|' || c == '<' || c == '>')
@@ -79,9 +92,9 @@ static char	*str_append(char const *src, char c)
 
 static void	validate_quotes(char c, bool *s_quote, bool *d_quote)
 {
-	if (c == '"' && !*d_quote)
+	if (c == '"' && (!*d_quote && !*s_quote))
 		*d_quote = true;
-	else if (c == 39 && !*s_quote)
+	else if (c == 39 && (!*s_quote && !*d_quote))
 		*s_quote = true;
 	else if (c == '"' && *d_quote)
 		*d_quote = false;
@@ -126,7 +139,8 @@ static t_token	*get_token(char **str)
 
 static void	find_type(t_token *token)
 {
-	if (!token->name)
+	if (ft_strncmp(token->name, "\"\"", 3) == 0
+		|| ft_strncmp(token->name, "''", 3) == 0)
 		token->type = EMPTY;
 	else if (ft_strncmp(token->name, "|", 2) == 0)
 		token->type = PIPE;
@@ -138,7 +152,7 @@ static void	find_type(t_token *token)
 		token->type = APPEND;
 	else if (ft_strncmp(token->name, "<<", 3) == 0)
 		token->type = HEREDOC;
-	else if (!token->previous )
+	else if (!token->previous || token->previous->type == EMPTY)
 		token->type = CMD;
 	else if (token->previous->type == PIPE
 		|| token->previous->type == FD)
