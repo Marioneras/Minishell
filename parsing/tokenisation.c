@@ -6,7 +6,7 @@
 /*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 10:34:57 by mberthou          #+#    #+#             */
-/*   Updated: 2025/05/27 13:38:45 by safamran         ###   ########.fr       */
+/*   Updated: 2025/05/30 16:54:01 by mberthou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,17 +38,9 @@ static char	is_sep(char c, char *token, bool track_s_quote, bool track_d_quote)
 	if (!token)
 		return (false);
 	len = ft_strlen(token);
-	if (((c == 39 && track_s_quote) || (c == '"' && track_d_quote)) && token)
-		return (true);
 	if (track_s_quote || track_d_quote)
 		return (false);
-	if ((!track_s_quote && !track_d_quote)
-		&& ((token[len - 1] == '"' && c == '"')
-		|| (token[len - 1] == '\'' && c == '\'')))
-		return (false);
-	if ((!track_s_quote && !track_d_quote) && (token[len - 1] == '"' || token[len - 1] == '\''))
-		return (true);
-	if (c == ' ' || (c >= '\t' && c <= '\r'))
+	if (c == ' ' || (c >= '\t' && c <= '\r') || c == '$')
 		return (true);
 	if ((c == '|' || c == '<' || c == '>')
 	 && (*token != '|' && *token != '<' && *token != '>'))
@@ -65,8 +57,6 @@ static char	*str_append(char const *src, char c)
 	char	*str;
 	int		i;
 
-	if (!c)
-		return (NULL);
 	if (!src)
 	{
 		str = (char *)malloc(sizeof(char) + 1);
@@ -139,10 +129,7 @@ static t_token	*get_token(char **str)
 
 static void	find_type(t_token *token)
 {
-	if (ft_strncmp(token->name, "\"\"", 3) == 0
-		|| ft_strncmp(token->name, "''", 3) == 0)
-		token->type = EMPTY;
-	else if (ft_strncmp(token->name, "|", 2) == 0)
+	if (ft_strncmp(token->name, "|", 2) == 0)
 		token->type = PIPE;
 	else if (ft_strncmp(token->name, ">", 2) == 0)
 		token->type = TRUNC;

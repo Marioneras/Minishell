@@ -6,7 +6,7 @@
 /*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 10:43:33 by mberthou          #+#    #+#             */
-/*   Updated: 2025/05/23 19:14:24 by mberthou         ###   ########.fr       */
+/*   Updated: 2025/05/30 16:25:59 by mberthou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
+
+#define PATH_MAX        4096
 
 typedef struct s_token
 {
@@ -52,9 +54,6 @@ typedef enum e_error
 	PIPE_ERROR = -2,
 	MISSING_FILENAME = -3,
 	INVALID_OPERATOR = -4,
-	/* INVALID_OPERATOR_<< = -5, */
-	/* INVALID_OPERATOR_> = -6, */
-	/* INVALID_OPERATOR_>> = -7, */
 }					t_error;
 
 typedef struct s_env
@@ -66,8 +65,8 @@ typedef struct s_env
 
 typedef struct s_tool
 {
-	char			*pwd;
-	char			*old_pwd;
+	char			pwd[PATH_MAX];
+	char			old_pwd[PATH_MAX];
 }					t_tool;
 
 typedef struct s_lexer
@@ -95,12 +94,12 @@ typedef struct s_obj
 	t_cmd			*cmd;
 	t_env			*env;
 	t_tool			*tool;
-	char			*str;
+	char			*input;
 	int				*pid;
 	int				exit_code;
 }					t_obj;
 
-typedef struct s_buildin
+typedef struct s_builtin
 {
 	char			*str;
 	int				(*function)(char **argv, t_obj *obj);
@@ -110,6 +109,7 @@ typedef struct s_buildin
 int		main(int argc, char *argv[], char **envp);
 
 /* ********* parsing ********** */
+void	parsing(t_obj *obj);
 void	quote_error(char *str);
 int		check_quotes(char *str);
 t_token	*tokenize(char *str);
@@ -117,6 +117,6 @@ int		check_syntax(t_token *head);
 void	print_list(t_token *list);
 
 /* ***** cleanup function ***** */
-void	free_list(t_token *token);
+void	free_token(t_token *token);
 
 #endif

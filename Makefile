@@ -6,7 +6,7 @@
 #    By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/18 14:38:01 by mberthou          #+#    #+#              #
-#    Updated: 2025/05/23 19:19:02 by mberthou         ###   ########.fr        #
+#    Updated: 2025/05/30 16:01:13 by mberthou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,7 @@ NOVISU = 0 #1 = no progress bar (usefull when tty is not available)
 ################################################################################
 
 FILE_EXTENSION = .c
-SRCS = srcs/main_loop.c parsing/check_quote.c parsing/syntax_check.c \
+SRCS = srcs/main_loop.c parsing/parsing.c parsing/check_quote.c parsing/syntax_check.c \
 	   parsing/tokenisation.c utils/cleanup_functions.c
 INCLUDES = -I./include -I./libft
 LIBFT = -L./libft -lft
