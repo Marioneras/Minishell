@@ -6,30 +6,12 @@
 /*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 10:34:57 by mberthou          #+#    #+#             */
-/*   Updated: 2025/05/30 16:54:01 by mberthou         ###   ########.fr       */
+/*   Updated: 2025/05/31 16:39:56 by mberthou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static t_token	*append_token(t_token *head, t_token *node)
-{
-	t_token	*current_node;
-
-	if (!node)
-		return (NULL);
-	if (!head)
-		head = node;
-	else
-	{
-		current_node = head;
-		while (current_node->next)
-			current_node = current_node->next;
-		current_node->next = node;
-		node->previous = current_node;
-	}
-	return (head);
-}
 
 static char	is_sep(char c, char *token, bool track_s_quote, bool track_d_quote)
 {
@@ -139,7 +121,7 @@ static void	find_type(t_token *token)
 		token->type = APPEND;
 	else if (ft_strncmp(token->name, "<<", 3) == 0)
 		token->type = HEREDOC;
-	else if (!token->previous || token->previous->type == EMPTY)
+	else if (!token->previous)
 		token->type = CMD;
 	else if (token->previous->type == PIPE
 		|| token->previous->type == FD)
@@ -183,9 +165,7 @@ void	print_list(t_token *list)
 	{
 		printf("------------------------\n");
 		printf("%s\n", current_node->name);
-		if (current_node->type == EMPTY)
-			printf("type: EMPTY\n");
-		else if (current_node->type == CMD)
+		if (current_node->type == CMD)
 			printf("type: COMMANDE\n");
 		else if (current_node->type == ARGUMENT)
 			printf("type: ARGUMENT\n");

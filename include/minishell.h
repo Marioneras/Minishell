@@ -6,7 +6,7 @@
 /*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 10:43:33 by mberthou          #+#    #+#             */
-/*   Updated: 2025/05/30 16:25:59 by mberthou         ###   ########.fr       */
+/*   Updated: 2025/05/31 16:05:29 by mberthou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ typedef struct s_token
 
 typedef enum e_type
 {
-	EMPTY,
 	CMD,
 	ARGUMENT,
 	PIPE,
@@ -81,8 +80,8 @@ typedef struct s_cmd
 	char			**argv;
 	char			*infile;
 	char			*outfile;
-	int				append;
-	int				heredoc;
+	bool			append;
+	bool			heredoc;
 	t_lexer			*lexer;
 	struct s_cmd	*next;
 	struct s_cmd	*previous;
@@ -118,5 +117,9 @@ void	print_list(t_token *list);
 
 /* ***** cleanup function ***** */
 void	free_token(t_token *token);
+
+/* ***** linked list functions ***** */
+t_cmd	*append_cmd(t_cmd *head, t_cmd *node);
+t_token	*append_token(t_token *head, t_token *node);
 
 #endif
