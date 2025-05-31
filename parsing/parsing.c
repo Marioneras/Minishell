@@ -144,15 +144,15 @@ static void	print_cmd(t_cmd *cmd)
 	int		j;
 
 	current = cmd;
-	i = 0;
+	i = 1;
 	j = 0;
 	while (current)
 	{
 		printf("------------------------\n");
 		printf("Commande %d :\n", i);
+		printf("argv = [");
 		while (current->argv[j])
 		{
-			printf("argv = [");
 			if (current->argv[j + 1])
 				printf("\"%s\", ", current->argv[j]);
 			else
@@ -193,7 +193,7 @@ void	parsing(t_obj *obj)
 		{
 			/* print_list(obj->token); */
 			/* expand(obj->token); */
-			create_cmd(obj);
+			obj->cmd = create_cmd(obj);
 			print_cmd(obj->cmd);
 		}
 		free_token(obj->token);
