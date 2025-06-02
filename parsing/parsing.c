@@ -55,7 +55,7 @@ static int	count_arguments(t_token *node)
 
 	current = node;
 	count = 0;
-	while (current)
+	while (current && current->type != PIPE)
 	{
 		if (current->type == CMD || current->type == ARGUMENT)
 			count++;
@@ -64,7 +64,12 @@ static int	count_arguments(t_token *node)
 	return (count);
 }
 
-static t_cmd	*get_cmd(t_token *current)
+/* static void	handle_redirections() */
+/* { */
+/**/
+/* } */
+
+static t_cmd	*get_cmd(t_token **current)
 {
 	t_cmd	*new_cmd;
 	int		count;
@@ -74,42 +79,42 @@ static t_cmd	*get_cmd(t_token *current)
 	if (!new_cmd)
 		return (NULL);
 	init_cmd(new_cmd);
-	count = count_arguments(current);
+	count = count_arguments((*current));
 	new_cmd->argv = (char **)malloc(sizeof(char *) * count + 1);
 	if (!new_cmd)
 		return (NULL);
 	i = 0;
-	while (current)
+	while ((*current))
 	{
-		if (current->type == CMD || current->type == ARGUMENT)
+		if ((*current)->type == CMD || (*current)->type == ARGUMENT)
 		{
-			new_cmd->argv[i] = ft_strdup(current->name);
+			new_cmd->argv[i] = ft_strdup((*current)->name);
 			if (!new_cmd->argv[i])
 				return (NULL);
 			i++;
 		}
-		else if (current->type == INPUT)
+		else if ((*current)->type == INPUT)
 		{
-			new_cmd->infile = ft_strdup(current->next->name);
+			new_cmd->infile = ft_strdup((*current)->next->name);
 			if (!new_cmd->infile)
 				return (NULL);
 		}
-		else if (current->type == TRUNC || current->type == APPEND)
+		else if ((*current)->type == TRUNC || (*current)->type == APPEND)
 		{
-			new_cmd->outfile = ft_strdup(current->next->name);
+			new_cmd->outfile = ft_strdup((*current)->next->name);
 			if (!new_cmd->outfile)
 				return (NULL);
 		}
-		else if (current->type == PIPE)
+		else if ((*current)->type == PIPE)
 		{
-			current = current->next;
+			(*current) = (*current)->next;
 			break;
 		}
-		if (current->type == APPEND)
+		if ((*current)->type == APPEND)
 			new_cmd->append = true;
-		else if (current->type == HEREDOC)
+		else if ((*current)->type == HEREDOC)
 			new_cmd->heredoc = true;
-		current = current->next;
+		(*current) = (*current)->next;
 	}
 	new_cmd->argv[i] = NULL;
 	return (new_cmd);
@@ -121,58 +126,19 @@ static t_cmd	*create_cmd(t_obj *obj)
 	t_cmd	*head;
 	t_cmd	*new_cmd;
 
-	head = get_cmd(obj->token);
+	current = obj->token;
+	head = get_cmd(&current);
 	if (!head)
 		return (NULL);
-	current = obj->token->next;
 	while (current)
 	{
-		new_cmd = get_cmd(current);
+		new_cmd = get_cmd(&current);
 		if (!new_cmd)
 			return (NULL);
 		append_cmd(head, new_cmd);
 		new_cmd = new_cmd->next;
-		current = current->next;
 	}
 	return (head);
-}
-
-static void	print_cmd(t_cmd *cmd)
-{
-	t_cmd	*current;
-	int		i;
-	int		j;
-
-	current = cmd;
-	i = 1;
-	j = 0;
-	while (current)
-	{
-		printf("------------------------\n");
-		printf("Commande %d :\n", i);
-		printf("argv = [");
-		while (current->argv[j])
-		{
-			if (current->argv[j + 1])
-				printf("\"%s\", ", current->argv[j]);
-			else
-				printf("\"%s\"", current->argv[j]);
-			j++;
-		}
-		printf("]\n");
-		if (current->infile)
-		{
-			printf("infile = \"%s\"\n", current->infile);
-			printf("heredoc = %s\n", current->heredoc ? "true" : "false");
-		}
-		if (current->outfile)
-		{
-			printf("outfile = \"%s\"\n", current->outfile);
-			printf("append = %s\n", current->append ? "true" : "false");
-		}
-		i++;
-		current = current->next;
-	}
 }
 
 void	parsing(t_obj *obj)

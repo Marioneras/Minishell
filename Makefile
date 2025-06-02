@@ -29,7 +29,8 @@ NOVISU = 0 #1 = no progress bar (usefull when tty is not available)
 
 FILE_EXTENSION = .c
 SRCS = srcs/main_loop.c parsing/parsing.c parsing/check_quote.c parsing/syntax_check.c \
-	   parsing/tokenisation.c utils/cleanup_functions.c utils/linked_list_utils.c
+	   parsing/tokenisation.c utils/cleanup_functions.c utils/linked_list_utils.c \
+	   utils/display_functions.c
 INCLUDES = -I./include -I./libft
 LIBFT = -L./libft -lft
 

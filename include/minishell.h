@@ -113,7 +113,6 @@ void	quote_error(char *str);
 int		check_quotes(char *str);
 t_token	*tokenize(char *str);
 int		check_syntax(t_token *head);
-void	print_list(t_token *list);
 
 /* ***** cleanup function ***** */
 void	free_token(t_token *token);
@@ -121,5 +120,9 @@ void	free_token(t_token *token);
 /* ***** linked list functions ***** */
 t_cmd	*append_cmd(t_cmd *head, t_cmd *node);
 t_token	*append_token(t_token *head, t_token *node);
+
+/* ******* display functions ******* */
+void	print_cmd(t_cmd *cmd);
+void	print_list(t_token *list);
 
 #endif
