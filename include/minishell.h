@@ -68,12 +68,12 @@ typedef struct s_tool
 	char			old_pwd[PATH_MAX];
 }					t_tool;
 
-typedef struct s_lexer
+typedef struct	s_redirections
 {
 	char			*str;
-	int				i;
+	int				type;
 	struct s_lexer	*next;
-}					t_lexer;
+}					t_redirections;
 
 typedef struct s_cmd
 {
@@ -82,7 +82,7 @@ typedef struct s_cmd
 	char			*outfile;
 	bool			append;
 	bool			heredoc;
-	t_lexer			*lexer;
+	t_redirections	*redirections;
 	struct s_cmd	*next;
 	struct s_cmd	*previous;
 }					t_cmd;

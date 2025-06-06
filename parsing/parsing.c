@@ -36,18 +36,6 @@ static void	just_enter(void)
 	//rl_redisplay();
 }
 
-static void	init_cmd(t_cmd *new_cmd)
-{
-	new_cmd->argv = NULL;
-	new_cmd->infile = NULL;
-	new_cmd->outfile = NULL;
-	new_cmd->append = false;
-	new_cmd->heredoc = false;
-	new_cmd->lexer = NULL;
-	new_cmd->next = NULL;
-	new_cmd->previous = NULL;
-}
-
 static int	count_arguments(t_token *node)
 {
 	t_token	*current;
@@ -64,10 +52,84 @@ static int	count_arguments(t_token *node)
 	return (count);
 }
 
-/* static void	handle_redirections() */
-/* { */
-/**/
-/* } */
+static t_redirections	*get_redirections(t_token *current)
+{
+	t_redirections	*new_red;
+
+	new_red = (t_redirections *)malloc(sizeof(t_redirections));
+	if (!new_red)
+		return ;
+	redirection->str = NULL;
+	redirection->type = 0;
+	new_red->str = ft_strdup(current->next->name);
+	if (!new_red->str)
+		return (NULL);
+	if (current->type == INPUT)
+		new_red->type = INPUT;
+	else if (current->type == APPEND)
+		new_red->type = APPEND;
+	else if (current->type == TRUNC)
+		new_red->type = TRUNC;
+	else if (current->type == HEREDOC)
+		new_red->type = HEREDOC;
+}
+
+static t_redirections	*handle_redirections(t_token *token)
+{
+	t_token			*current;
+	t_redirections	*head;
+	t_redirections	*new_red;
+
+	current = token;
+	head = get_redirection(current);
+	if (!head)
+		return (NULL);
+	current = current->next;
+	while (current || current->type != PIPE)
+	{
+		if (current->type == INPUT || current->type == APPEND
+		|| current->type == TRUNC || current->type == HEREDOC)
+		{
+			new_red = get_redirections(current);
+			if (!new_red)
+				return (NULL);
+			append_redirections(head, new_cmd);
+			new_red = new_red->next;
+		}
+		current = current->next;
+	}
+	return (head);
+}
+
+static void	init_cmd(t_cmd *new_cmd, t_token *token)
+{
+	int	count;
+	t_redirection	*current;
+
+	count = count_arguments(token);
+	new_cmd->argv = (char **)malloc(sizeof(char *) * count + 1);
+	new_cmd->redirections = handle_redirections(token);
+	if (!new_cmd->argv || !new_cmd->redirections)
+		return (NULL);
+	current = new_cmd->redirections;
+	while (current)
+	{
+		if (current->type == INPUT)
+		{
+			new_cmd->infile = ft_strdup(current->next->name);
+			if (!new_cmd->infile)
+				return (NULL);
+		}
+		else if (current->type == TRUNC || current->type == APPEND)
+		{
+			new_cmd->outfile = ft_strdup(current->next->name);
+			if (!new_cmd->outfile)
+				return (NULL);
+		}
+	}
+	new_cmd->next = NULL;
+	new_cmd->previous = NULL;
+}
 
 static t_cmd	*get_cmd(t_token **current)
 {
@@ -78,13 +140,9 @@ static t_cmd	*get_cmd(t_token **current)
 	new_cmd = (t_cmd *)malloc(sizeof(t_cmd));
 	if (!new_cmd)
 		return (NULL);
-	init_cmd(new_cmd);
-	count = count_arguments((*current));
-	new_cmd->argv = (char **)malloc(sizeof(char *) * count + 1);
-	if (!new_cmd)
-		return (NULL);
+	init_cmd(new_cmd, (*current));
 	i = 0;
-	while ((*current))
+	while ((*current) || (*current)->type != PIPE)
 	{
 		if ((*current)->type == CMD || (*current)->type == ARGUMENT)
 		{
@@ -93,27 +151,6 @@ static t_cmd	*get_cmd(t_token **current)
 				return (NULL);
 			i++;
 		}
-		else if ((*current)->type == INPUT)
-		{
-			new_cmd->infile = ft_strdup((*current)->next->name);
-			if (!new_cmd->infile)
-				return (NULL);
-		}
-		else if ((*current)->type == TRUNC || (*current)->type == APPEND)
-		{
-			new_cmd->outfile = ft_strdup((*current)->next->name);
-			if (!new_cmd->outfile)
-				return (NULL);
-		}
-		else if ((*current)->type == PIPE)
-		{
-			(*current) = (*current)->next;
-			break;
-		}
-		if ((*current)->type == APPEND)
-			new_cmd->append = true;
-		else if ((*current)->type == HEREDOC)
-			new_cmd->heredoc = true;
 		(*current) = (*current)->next;
 	}
 	new_cmd->argv[i] = NULL;
