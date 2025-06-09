@@ -55,6 +55,7 @@ int	main(int argc, char *argv[], char **envp)
 
 	(void)argv;
 	(void)envp;
+	init_obj(&obj);
 	if (argc == 1)
 	{
 		init_signal();

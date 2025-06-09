@@ -15,11 +15,8 @@
 
 static char	is_sep(char c, char *token, bool track_s_quote, bool track_d_quote)
 {
-	int	len;
-
 	if (!token)
 		return (false);
-	len = ft_strlen(token);
 	if (track_s_quote || track_d_quote)
 		return (false);
 	if (c == ' ' || (c >= '\t' && c <= '\r') || c == '$')

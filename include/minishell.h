@@ -70,10 +70,10 @@ typedef struct s_tool
 
 typedef struct	s_redirections
 {
-	char			*str;
-	int				type;
-	struct s_lexer	*next;
-}					t_redirections;
+	char					*str;
+	int						type;
+	struct s_redirections	*next;
+}							t_redirections;
 
 typedef struct s_cmd
 {
@@ -118,6 +118,7 @@ int		check_syntax(t_token *head);
 void	free_token(t_token *token);
 
 /* ***** linked list functions ***** */
+t_redirections	*append_redirections(t_redirections *head, t_redirections *node);
 t_cmd	*append_cmd(t_cmd *head, t_cmd *node);
 t_token	*append_token(t_token *head, t_token *node);
 

@@ -12,6 +12,24 @@
 
 #include "minishell.h"
 
+t_redirections	*append_redirections(t_redirections *head, t_redirections *node)
+{
+	t_redirections	*current_node;
+
+	if (!node)
+		return (NULL);
+	if (!head)
+		head = node;
+	else
+	{
+		current_node = head;
+		while (current_node->next)
+			current_node = current_node->next;
+		current_node->next = node;
+	}
+	return (head);
+}
+
 t_cmd	*append_cmd(t_cmd *head, t_cmd *node)
 {
 	t_cmd	*current_node;

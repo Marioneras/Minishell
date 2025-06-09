@@ -52,15 +52,13 @@ static int	count_arguments(t_token *node)
 	return (count);
 }
 
-static t_redirections	*get_redirections(t_token *current)
+static t_redirections	*get_redirection(t_token *current)
 {
 	t_redirections	*new_red;
 
 	new_red = (t_redirections *)malloc(sizeof(t_redirections));
 	if (!new_red)
-		return ;
-	redirection->str = NULL;
-	redirection->type = 0;
+		return (NULL);
 	new_red->str = ft_strdup(current->next->name);
 	if (!new_red->str)
 		return (NULL);
@@ -72,6 +70,7 @@ static t_redirections	*get_redirections(t_token *current)
 		new_red->type = TRUNC;
 	else if (current->type == HEREDOC)
 		new_red->type = HEREDOC;
+	return (new_red);
 }
 
 static t_redirections	*handle_redirections(t_token *token)
@@ -90,10 +89,10 @@ static t_redirections	*handle_redirections(t_token *token)
 		if (current->type == INPUT || current->type == APPEND
 		|| current->type == TRUNC || current->type == HEREDOC)
 		{
-			new_red = get_redirections(current);
+			new_red = get_redirection(current);
 			if (!new_red)
 				return (NULL);
-			append_redirections(head, new_cmd);
+			append_redirections(head, new_red);
 			new_red = new_red->next;
 		}
 		current = current->next;
@@ -104,28 +103,43 @@ static t_redirections	*handle_redirections(t_token *token)
 static void	init_cmd(t_cmd *new_cmd, t_token *token)
 {
 	int	count;
-	t_redirection	*current;
 
 	count = count_arguments(token);
 	new_cmd->argv = (char **)malloc(sizeof(char *) * count + 1);
 	new_cmd->redirections = handle_redirections(token);
 	if (!new_cmd->argv || !new_cmd->redirections)
-		return (NULL);
-	current = new_cmd->redirections;
-	while (current)
+		return ;
+	while (token)
 	{
-		if (current->type == INPUT)
+		if (token->type == INPUT) // `<`
 		{
-			new_cmd->infile = ft_strdup(current->next->name);
-			if (!new_cmd->infile)
-				return (NULL);
+			if (new_cmd->infile)
+				free(new_cmd->infile); // Free previous one
+			new_cmd->infile = ft_strdup(token->next->name);
+			new_cmd->heredoc = false;
 		}
-		else if (current->type == TRUNC || current->type == APPEND)
+		else if (token->type == HEREDOC) // `<<`
 		{
-			new_cmd->outfile = ft_strdup(current->next->name);
-			if (!new_cmd->outfile)
-				return (NULL);
+			if (new_cmd->infile)
+				free(new_cmd->infile);
+			new_cmd->infile = ft_strdup(token->next->name);
+			new_cmd->heredoc = true;
 		}
+		else if (token->type == TRUNC) // `>`
+		{
+			if (new_cmd->outfile)
+				free(new_cmd->outfile);
+			new_cmd->outfile = ft_strdup(token->next->name);
+			new_cmd->append = false;
+		}
+		else if (token->type == APPEND) // `>>`
+		{
+			if (new_cmd->outfile)
+				free(new_cmd->outfile);
+			new_cmd->outfile = ft_strdup(token->next->name);
+			new_cmd->append = true;
+		}
+		token = token->next;
 	}
 	new_cmd->next = NULL;
 	new_cmd->previous = NULL;
@@ -134,7 +148,6 @@ static void	init_cmd(t_cmd *new_cmd, t_token *token)
 static t_cmd	*get_cmd(t_token **current)
 {
 	t_cmd	*new_cmd;
-	int		count;
 	int		i;
 
 	new_cmd = (t_cmd *)malloc(sizeof(t_cmd));
