@@ -6,7 +6,7 @@
 /*   By: safamran <safamran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 14:22:11 by safamran          #+#    #+#             */
-/*   Updated: 2025/06/09 16:37:07 by mberthou         ###   ########.fr       */
+/*   Updated: 2025/06/09 17:34:55 by mberthou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int nb_quote(char *str)
     i = 0;
     while (str[i] != '\0')
     {
-        if (str[i] == 34 || str[i] == 39)
+        if (str[i] == '"' || str[i] == '\'')
             return (1);
         i++;
     }
