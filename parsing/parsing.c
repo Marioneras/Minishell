@@ -80,8 +80,8 @@ static t_redirections	*handle_redirections(t_token *token)
 	t_redirections	*new_red;
 
 	current = token;
-	while (current->type != INPUT && current->type != APPEND
-		&& current->type != TRUNC && current->type != HEREDOC)
+	while (current && (current->type != INPUT && current->type != APPEND
+		&& current->type != TRUNC && current->type != HEREDOC))
 		current = current->next;
 	head = get_redirection(current);
 	if (!head)
@@ -112,30 +112,30 @@ static void	init_cmd(t_cmd *new_cmd, t_token *token)
 	new_cmd->redirections = handle_redirections(token);
 	if (!new_cmd->argv || !new_cmd->redirections)
 		return ;
-	while (token)
+	while (token && token->type != PIPE)
 	{
-		if (token->type == INPUT) // `<`
+		if (token->type == INPUT)
 		{
 			if (new_cmd->infile)
-				free(new_cmd->infile); // Free previous one
+				free(new_cmd->infile);
 			new_cmd->infile = ft_strdup(token->next->name);
 			new_cmd->heredoc = false;
 		}
-		else if (token->type == HEREDOC) // `<<`
+		else if (token->type == HEREDOC)
 		{
 			if (new_cmd->infile)
 				free(new_cmd->infile);
 			new_cmd->infile = ft_strdup(token->next->name);
 			new_cmd->heredoc = true;
 		}
-		else if (token->type == TRUNC) // `>`
+		else if (token->type == TRUNC)
 		{
 			if (new_cmd->outfile)
 				free(new_cmd->outfile);
 			new_cmd->outfile = ft_strdup(token->next->name);
 			new_cmd->append = false;
 		}
-		else if (token->type == APPEND) // `>>`
+		else if (token->type == APPEND)
 		{
 			if (new_cmd->outfile)
 				free(new_cmd->outfile);
@@ -158,6 +158,7 @@ static t_cmd	*get_cmd(t_token **current)
 		return (NULL);
 	init_cmd(new_cmd, (*current));
 	i = 0;
+	(*current) = (*current)->next;
 	while ((*current) && (*current)->type != PIPE)
 	{
 		if ((*current)->type == CMD || (*current)->type == ARGUMENT)
