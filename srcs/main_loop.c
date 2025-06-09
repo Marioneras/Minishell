@@ -6,7 +6,7 @@
 /*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:36:22 by mberthou          #+#    #+#             */
-/*   Updated: 2025/05/27 13:45:00 by safamran         ###   ########.fr       */
+/*   Updated: 2025/06/09 16:39:49 by mberthou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,24 @@ void	just_enter(void)
 	//rl_redisplay();
 }
 
+void	racine_ex(t_token *head, char **envp)
+{
+	t_token	*current;
+	char	*result;
+
+	current = head;
+	while (current)
+	{
+		result = expand_it(current->name, envp);
+		if (result)
+		{
+			free(current->name);
+			current->name = ft_strdup(result);
+		}
+		current = current->next;
+	}
+}
+
 int	main(int argc, char *argv[], char **envp)
 {
 	t_token	*token_list;
@@ -87,7 +105,10 @@ int	main(int argc, char *argv[], char **envp)
 				else if (exit_code == MISSING_FILENAME)
 					printf("minishell: syntax error near unexpected token `newline'\n");
 				else if (exit_code != INVALID_OPERATOR)
+				{
+					racine_ex(token_list, envp);
 					print_list(token_list);
+				}
 				free_list(token_list);
 			}
 			else if (check_quotes(command) == 0)
