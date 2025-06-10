@@ -83,6 +83,8 @@ static t_redirections	*handle_redirections(t_token *token)
 	while (current && (current->type != INPUT && current->type != APPEND
 		&& current->type != TRUNC && current->type != HEREDOC))
 		current = current->next;
+	if (!current)
+		return (NULL);
 	head = get_redirection(current);
 	if (!head)
 		return (NULL);
@@ -158,7 +160,6 @@ static t_cmd	*get_cmd(t_token **current)
 		return (NULL);
 	init_cmd(new_cmd, (*current));
 	i = 0;
-	(*current) = (*current)->next;
 	while ((*current) && (*current)->type != PIPE)
 	{
 		if ((*current)->type == CMD || (*current)->type == ARGUMENT)
@@ -186,6 +187,7 @@ static t_cmd	*create_cmd(t_obj *obj)
 		return (NULL);
 	while (current)
 	{
+		current = current->next;
 		new_cmd = get_cmd(&current);
 		if (!new_cmd)
 			return (NULL);
