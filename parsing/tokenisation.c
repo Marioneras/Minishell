@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   tokenisation.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: safamran <safamran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 10:34:57 by mberthou          #+#    #+#             */
-/*   Updated: 2025/05/27 13:38:45 by safamran         ###   ########.fr       */
+/*   Updated: 2025/06/10 19:07:07 by safamran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static t_token	*append_token(t_token *head, t_token *node)
+static t_token *append_token(t_token *head, t_token *node)
 {
-	t_token	*current_node;
+	t_token *current_node;
 
 	if (!node)
 		return (NULL);
@@ -31,9 +31,9 @@ static t_token	*append_token(t_token *head, t_token *node)
 	return (head);
 }
 
-static char	is_sep(char c, char *token, bool track_s_quote, bool track_d_quote)
+static char is_sep(char c, char *token, bool track_s_quote, bool track_d_quote)
 {
-	int	len;
+	int len;
 
 	if (!token)
 		return (false);
@@ -42,28 +42,24 @@ static char	is_sep(char c, char *token, bool track_s_quote, bool track_d_quote)
 		return (true);
 	if (track_s_quote || track_d_quote)
 		return (false);
-	if ((!track_s_quote && !track_d_quote)
-		&& ((token[len - 1] == '"' && c == '"')
-		|| (token[len - 1] == '\'' && c == '\'')))
+	if ((!track_s_quote && !track_d_quote) && ((token[len - 1] == '"' && c == '"') || (token[len - 1] == '\'' && c == '\'')))
 		return (false);
 	if ((!track_s_quote && !track_d_quote) && (token[len - 1] == '"' || token[len - 1] == '\''))
 		return (true);
 	if (c == ' ' || (c >= '\t' && c <= '\r'))
 		return (true);
-	if ((c == '|' || c == '<' || c == '>')
-	 && (*token != '|' && *token != '<' && *token != '>'))
+	if ((c == '|' || c == '<' || c == '>') && (*token != '|' && *token != '<' && *token != '>'))
 		return (true);
-	if ((c != '|' && c != '<' && c != '>')
-	 && (*token == '|' || *token == '<' || *token == '>'))
+	if ((c != '|' && c != '<' && c != '>') && (*token == '|' || *token == '<' || *token == '>'))
 		return (true);
 	else
 		return (false);
 }
 
-static char	*str_append(char const *src, char c)
+static char *str_append(char const *src, char c)
 {
-	char	*str;
-	int		i;
+	char *str;
+	int i;
 
 	if (!c)
 		return (NULL);
@@ -87,10 +83,11 @@ static char	*str_append(char const *src, char c)
 	}
 	str[i++] = c;
 	str[i] = '\0';
+	free((char *)src);
 	return (str);
 }
 
-static void	validate_quotes(char c, bool *s_quote, bool *d_quote)
+static void validate_quotes(char c, bool *s_quote, bool *d_quote)
 {
 	if (c == '"' && (!*d_quote && !*s_quote))
 		*d_quote = true;
@@ -102,7 +99,7 @@ static void	validate_quotes(char c, bool *s_quote, bool *d_quote)
 		*s_quote = false;
 }
 
-static void	initialize_tolkien(t_token *new_token)
+static void initialize_tolkien(t_token *new_token)
 {
 	new_token->type = 0;
 	new_token->previous = NULL;
@@ -110,11 +107,11 @@ static void	initialize_tolkien(t_token *new_token)
 	new_token->name = NULL;
 }
 
-static t_token	*get_token(char **str)
+static t_token *get_token(char **str)
 {
-	t_token	*new_token;
-	bool	track_s_quote;
-	bool	track_d_quote;
+	t_token *new_token;
+	bool track_s_quote;
+	bool track_d_quote;
 
 	new_token = (t_token *)malloc(sizeof(t_token));
 	if (!new_token)
@@ -137,10 +134,9 @@ static t_token	*get_token(char **str)
 	return (new_token);
 }
 
-static void	find_type(t_token *token)
+static void find_type(t_token *token)
 {
-	if (ft_strncmp(token->name, "\"\"", 3) == 0
-		|| ft_strncmp(token->name, "''", 3) == 0)
+	if (ft_strncmp(token->name, "\"\"", 3) == 0 || ft_strncmp(token->name, "''", 3) == 0)
 		token->type = EMPTY;
 	else if (ft_strncmp(token->name, "|", 2) == 0)
 		token->type = PIPE;
@@ -154,22 +150,20 @@ static void	find_type(t_token *token)
 		token->type = HEREDOC;
 	else if (!token->previous || token->previous->type == EMPTY)
 		token->type = CMD;
-	else if (token->previous->type == PIPE
-		|| token->previous->type == FD)
+	else if (token->previous->type == PIPE || token->previous->type == FD)
 		token->type = CMD;
 	else if (token->previous->type == HEREDOC)
 		token->type = LIMITER;
-	else if (token->previous->type == TRUNC || token->previous->type == APPEND
-		|| token->previous->type == INPUT)
+	else if (token->previous->type == TRUNC || token->previous->type == APPEND || token->previous->type == INPUT)
 		token->type = FD;
 	else
 		token->type = ARGUMENT;
 }
 
-t_token	*tokenize(char *str)
+t_token *tokenize(char *str)
 {
-	t_token	*head;
-	t_token	*new_token;
+	t_token *head;
+	t_token *new_token;
 
 	head = get_token(&str);
 	find_type(head);
@@ -187,9 +181,9 @@ t_token	*tokenize(char *str)
 	return (head);
 }
 
-void	print_list(t_token *list)
+void print_list(t_token *list)
 {
-	t_token	*current_node;
+	t_token *current_node;
 
 	current_node = list;
 	while (current_node)
