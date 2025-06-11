@@ -6,13 +6,13 @@
 /*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 19:06:30 by mberthou          #+#    #+#             */
-/*   Updated: 2025/05/23 19:31:25 by mberthou         ###   ########.fr       */
+/*   Updated: 2025/06/11 14:43:02 by mberthou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	free_list(t_token *token)
+void	free_token(t_token *token)
 {
 	t_token	*tmp;
 

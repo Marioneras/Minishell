@@ -6,30 +6,11 @@
 /*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 10:34:57 by mberthou          #+#    #+#             */
-/*   Updated: 2025/05/27 13:38:45 by safamran         ###   ########.fr       */
+/*   Updated: 2025/06/11 14:34:59 by mberthou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static t_token	*append_token(t_token *head, t_token *node)
-{
-	t_token	*current_node;
-
-	if (!node)
-		return (NULL);
-	if (!head)
-		head = node;
-	else
-	{
-		current_node = head;
-		while (current_node->next)
-			current_node = current_node->next;
-		current_node->next = node;
-		node->previous = current_node;
-	}
-	return (head);
-}
 
 static char	is_sep(char c, char *token, bool track_s_quote, bool track_d_quote)
 {
@@ -185,37 +166,4 @@ t_token	*tokenize(char *str)
 		new_token = new_token->next;
 	}
 	return (head);
-}
-
-void	print_list(t_token *list)
-{
-	t_token	*current_node;
-
-	current_node = list;
-	while (current_node)
-	{
-		printf("------------------------\n");
-		printf("%s\n", current_node->name);
-		if (current_node->type == EMPTY)
-			printf("type: EMPTY\n");
-		else if (current_node->type == CMD)
-			printf("type: COMMANDE\n");
-		else if (current_node->type == ARGUMENT)
-			printf("type: ARGUMENT\n");
-		else if (current_node->type == PIPE)
-			printf("type: PIPE\n");
-		else if (current_node->type == TRUNC)
-			printf("type: TRUNC\n");
-		else if (current_node->type == INPUT)
-			printf("type: INPUT\n");
-		else if (current_node->type == APPEND)
-			printf("type: APPEND\n");
-		else if (current_node->type == HEREDOC)
-			printf("type: HEREDOC\n");
-		else if (current_node->type == LIMITER)
-			printf("type: LIMITER\n");
-		else if (current_node->type == FD)
-			printf("type: FILE\n");
-		current_node = current_node->next;
-	}
 }
