@@ -33,10 +33,12 @@ static void	init_cmd(t_cmd *new_cmd, t_token *token)
 	int	count;
 
 	count = count_arguments(token);
-	new_cmd->argv = (char **)malloc(sizeof(char *) * count + 1);
+	new_cmd->argv = (char **)malloc(sizeof(char *) * (count + 1));
 	new_cmd->redirections = handle_redirections(token);
 	if (!new_cmd->argv || !new_cmd->redirections)
 		return ;
+	new_cmd->outfile = NULL;
+	new_cmd->infile = NULL;
 	while (token && token->type != PIPE)
 	{
 		if (token->type == INPUT)

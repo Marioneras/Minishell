@@ -68,6 +68,7 @@ static char	*str_append(char const *src, char c)
 	}
 	str[i++] = c;
 	str[i] = '\0';
+	free((char *)src);
 	return (str);
 }
 

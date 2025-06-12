@@ -73,7 +73,10 @@ int	main(int argc, char *argv[], char **envp)
 			init_signal();
 			obj.input = readline("mafiyashell> "); //readline renvoie str alloue (=ce que user a ecrit)
 			if (ft_strncmp(obj.input, "exit", 5) == 0)
+			{
+				free_cmd(obj.cmd);
 				exit (0); // + free machin
+			}
 			add_history(obj.input);
 			parsing(&obj, envp);
 			/* execute(&obj); */

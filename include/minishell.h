@@ -54,9 +54,6 @@ typedef enum e_error
 	PIPE_ERROR = -2,
 	MISSING_FILENAME = -3,
 	INVALID_OPERATOR = -4,
-	/* INVALID_OPERATOR_<< = -5, */
-	/* INVALID_OPERATOR_> = -6, */
-	/* INVALID_OPERATOR_>> = -7, */
 }					t_error;
 
 typedef struct s_env
@@ -138,6 +135,8 @@ t_token				*append_token(t_token *head, t_token *node);
 
 /* ***** cleanup function ***** */
 void				free_token(t_token *token);
+void				free_redirections(t_redirections *red);
+void				free_cmd(t_cmd *cmd);
 
 /* ***** display functions ***** */
 void				print_cmd(t_cmd *cmd);
