@@ -6,7 +6,7 @@
 /*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:36:22 by mberthou          #+#    #+#             */
-/*   Updated: 2025/06/11 14:43:17 by mberthou         ###   ########.fr       */
+/*   Updated: 2025/06/12 19:48:19 by mberthou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,27 +74,13 @@ int	main(int argc, char *argv[], char **envp)
 			obj.input = readline("mafiyashell> "); //readline renvoie str alloue (=ce que user a ecrit)
 			if (ft_strncmp(obj.input, "exit", 5) == 0)
 			{
-				free_cmd(obj.cmd);
+				free_obj(obj);
 				exit (0); // + free machin
 			}
 			add_history(obj.input);
 			parsing(&obj, envp);
-			/* execute(&obj); */
+			execute(&obj);
 		}
 	}
 	return(obj.exit_code);
 }
-/*
-int	parse_it(char *str)
-{
-	int	i;
-
-	exit_code = 0;
-
-	if (check_quotes == 0)
-		return(0)
-	if (marion == 0)
-		return (0)
-	return(1);
-}
-*/
