@@ -6,7 +6,7 @@
 /*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:12:59 by mberthou          #+#    #+#             */
-/*   Updated: 2025/06/13 17:50:16 by mberthou         ###   ########.fr       */
+/*   Updated: 2025/06/16 12:54:10 by mberthou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static void	child_process(t_obj *obj, t_cmd *cmd, int pipe_fd)
 		run_builtin(cmd);
 	else
 	{
-		cmd_path = get_absolute_path();
+		cmd_path = get_absolute_path(cmd, obj);
 		if (execve(cmd_path, cmd->argv, obj->envp) < 0)
 			perror("mafiyashell"); // clear everything
 	}
@@ -96,7 +96,7 @@ void	execute(t_obj *obj)
 	/* if (!current->next && is_built_in(current)) */
 	/* { */
 	/* 	set_redirections(obj); */
-	/* 	run_builtin(obj); */
+	/* 	(obj->exit_code = )run_builtin(obj); */
 	/* } */
 	/* else */
 		execution_routine(obj);
