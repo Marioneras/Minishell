@@ -6,7 +6,7 @@
 /*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 11:57:01 by mberthou          #+#    #+#             */
-/*   Updated: 2025/06/16 12:54:08 by mberthou         ###   ########.fr       */
+/*   Updated: 2025/06/17 10:07:53 by mberthou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,4 @@ int	run_builtin(t_obj obj)
 	else if (ft_strncmp(cmd->argv[0], "exit", 5) == 0)
 		run_exit();
 	return (0);
-}
-
-void	set_redirections(t_obj *obj)
-{
-	
 }
