@@ -6,7 +6,7 @@
 /*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 10:43:33 by mberthou          #+#    #+#             */
-/*   Updated: 2025/06/13 17:33:02 by mberthou         ###   ########.fr       */
+/*   Updated: 2025/06/17 16:05:47 by mberthou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,14 +56,6 @@ typedef enum e_error
 	INVALID_OPERATOR = -4,
 }							t_error;
 
-typedef struct s_env
-{
-	char					*key;
-	char					*value;
-	struct s_env			*next;
-	struct s_env			*previous;
-}							t_env;
-
 typedef struct s_tool
 {
 	char					pwd[PATH_MAX];
@@ -93,8 +85,8 @@ typedef struct s_obj
 {
 	t_token					*token;
 	t_cmd					*cmd;
-	t_env					*env;
 	t_tool					*tool;
+	char					**env;
 	char					*input;
 	int						*pid;
 	int						exit_code;
@@ -131,6 +123,10 @@ char						*get_varname(char *str, int *i, int start);
 
 /* ********* execute ********** */
 void						execute(t_obj *obj);
+char						*get_absolute_path(t_cmd *cmd, t_obj *obj);
+char						*get_env_variable(char **env, char *variable);
+void						set_redirections(t_obj *obj);
+void						create_files(t_obj *obj);
 
 /* ***** linked list utils **** */
 t_redirections				*append_redirections(t_redirections *head,

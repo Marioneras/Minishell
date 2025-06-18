@@ -6,25 +6,29 @@
 /*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 16:14:32 by mberthou          #+#    #+#             */
-/*   Updated: 2025/06/13 17:50:14 by mberthou         ###   ########.fr       */
+/*   Updated: 2025/06/17 16:04:54 by mberthou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*get_env_variable(t_env *env, char *variable)
+char	*get_env_variable(char **env, char *variable)
 {
-	t_env	*current;
-	int		variable_len;
+	int	i;
+	int	variable_len;
 
+	variable = ft_strjoin(variable, "=");
+	if (!variable)
+		return (NULL);
 	variable_len = ft_strlen(variable);
-	current = env;
-	while (current)
+	i = 0;
+	while (env[i])
 	{
-		if (ft_strncmp(current->key, variable, variable_len) == 0)
-			return (current->value);
-		current = current->next;
+		if (ft_strncmp(env[i], variable, variable_len) == 0)
+			return (free(variable), &env[i][variable_len]);
+		i++;
 	}
+	free(variable);
 	return (NULL);
 }
 
@@ -37,15 +41,15 @@ char	*get_absolute_path(t_cmd *cmd, t_obj *obj)
 
 	if (!cmd->argv[0][0])
 		return (NULL);
-	if (cmd->argv[0][0] == '/')
+	if (cmd->argv[0][0] == '/' || ft_strncmp(cmd->argv[0], "./", 2) == 0)
 		return (ft_strdup(cmd->argv[0]));
-	paths = ft_split(get_env_variable(obj->env, PATH), ':');
+	paths = ft_split(get_env_variable(obj->env, "PATH"), ':');
 	if (!paths)
 		return (NULL);
 	i = 0;
 	while (paths[i])
 	{
-		path = ft_strjoin(paths[i], '/');
+		path = ft_strjoin(paths[i], "/");
 		if (!path)
 			return (NULL);
 		exec = ft_strjoin(path, cmd->argv[0]);

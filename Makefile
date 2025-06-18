@@ -6,7 +6,7 @@
 #    By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/18 14:38:01 by mberthou          #+#    #+#              #
-#    Updated: 2025/06/11 14:53:00 by mberthou         ###   ########.fr        #
+#    Updated: 2025/06/17 16:04:20 by mberthou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,8 @@ SRCS = srcs/main_loop.c parsing/check_quote.c parsing/syntax_check.c \
 	   parsing/expand/expand.c parsing/expand/start.c \
 	   utils/utils_functions.c parsing/parsing.c \
 	   utils/linked_list_utils.c parsing/command_creation.c \
-	   utils/display_functions.c
+	   utils/display_functions.c \
+	   execution/redirections.c execution/execute.c execution/find_path.c 
 INCLUDES = -I./include -I./libft
 LIBFT = -L./libft -lft
 

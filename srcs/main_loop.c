@@ -6,7 +6,7 @@
 /*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:36:22 by mberthou          #+#    #+#             */
-/*   Updated: 2025/06/12 19:48:19 by mberthou         ###   ########.fr       */
+/*   Updated: 2025/06/17 15:53:15 by mberthou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,11 @@ static void	init_signal()
 	sigaction (SIGINT, &sa, NULL);
 }
 
-static void	init_obj(t_obj *obj)
+static void	init_obj(t_obj *obj, char **env)
 {
 	obj->token = NULL;
 	obj->cmd = NULL;
-	obj->env = NULL;
+	obj->env = env;
 	obj->tool = (t_tool *)malloc(sizeof(t_tool));
 	if (!obj->tool)
 		exit(2);
@@ -62,8 +62,7 @@ int	main(int argc, char *argv[], char **envp)
 	t_obj	obj;
 
 	(void)argv;
-	(void)envp;
-	init_obj(&obj);
+	init_obj(&obj, envp);
 	if (argc == 1)
 	{
 		init_signal();
