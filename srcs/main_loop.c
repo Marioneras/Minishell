@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   main_loop.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: safamran <safamran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 17:36:22 by mberthou          #+#    #+#             */
-/*   Updated: 2025/06/12 19:48:19 by mberthou         ###   ########.fr       */
+/*   Updated: 2025/06/19 13:53:56 by safamran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	ctrl_c(int signal, siginfo_t *info, void *contex)
+static void ctrl_c(int signal, siginfo_t *info, void *contex)
 {
 	(void)signal;
 	(void)info;
@@ -23,16 +23,16 @@ static void	ctrl_c(int signal, siginfo_t *info, void *contex)
 	rl_redisplay();
 }
 
-static void	init_signal()
+static void init_signal()
 {
-	struct	sigaction	sa;
+	struct sigaction sa;
 	sa.sa_sigaction = ctrl_c;
 	sa.sa_flags = SA_SIGINFO;
 	sigemptyset(&sa.sa_mask);
-	sigaction (SIGINT, &sa, NULL);
+	sigaction(SIGINT, &sa, NULL);
 }
 
-static void	init_obj(t_obj *obj)
+static void init_obj(t_obj *obj)
 {
 	obj->token = NULL;
 	obj->cmd = NULL;
@@ -57,9 +57,9 @@ static void	init_obj(t_obj *obj)
 	obj->exit_code = 0;
 }
 
-int	main(int argc, char *argv[], char **envp)
+int main(int argc, char *argv[], char **envp)
 {
-	t_obj	obj;
+	t_obj obj;
 
 	(void)argv;
 	(void)envp;
@@ -71,16 +71,16 @@ int	main(int argc, char *argv[], char **envp)
 		while (1)
 		{
 			init_signal();
-			obj.input = readline("mafiyashell> "); //readline renvoie str alloue (=ce que user a ecrit)
+			obj.input = readline("mafiyashell> "); // readline renvoie str alloue (=ce que user a ecrit)
 			if (ft_strncmp(obj.input, "exit", 5) == 0)
 			{
-				free_obj(obj);
-				exit (0); // + free machin
+				// free_obj(obj);
+				exit(0); // + free machin
 			}
 			add_history(obj.input);
 			parsing(&obj, envp);
-			execute(&obj);
+			// execute(&obj);
 		}
 	}
-	return(obj.exit_code);
+	return (obj.exit_code);
 }

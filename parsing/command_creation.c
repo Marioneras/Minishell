@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   command_creation.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mberthou <mberthou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: safamran <safamran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 13:50:19 by mberthou          #+#    #+#             */
-/*   Updated: 2025/06/11 14:42:30 by mberthou         ###   ########.fr       */
+/*   Updated: 2025/06/19 14:00:28 by safamran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	count_arguments(t_token *node)
+static int count_arguments(t_token *node)
 {
-	t_token	*current;
-	int		count;
+	t_token *current;
+	int count;
 
 	current = node;
 	count = 0;
@@ -28,15 +28,15 @@ static int	count_arguments(t_token *node)
 	return (count);
 }
 
-static void	init_cmd(t_cmd *new_cmd, t_token *token)
+static void init_cmd(t_cmd *new_cmd, t_token *token)
 {
-	int	count;
+	int count;
 
 	count = count_arguments(token);
 	new_cmd->argv = (char **)malloc(sizeof(char *) * (count + 1));
 	new_cmd->redirections = handle_redirections(token);
-	if (!new_cmd->argv || !new_cmd->redirections)
-		return ;
+	if (!new_cmd->argv)
+		return;
 	new_cmd->outfile = NULL;
 	new_cmd->infile = NULL;
 	while (token && token->type != PIPE)
@@ -75,10 +75,10 @@ static void	init_cmd(t_cmd *new_cmd, t_token *token)
 	new_cmd->previous = NULL;
 }
 
-static t_cmd	*get_cmd(t_token **current)
+static t_cmd *get_cmd(t_token **current)
 {
-	t_cmd	*new_cmd;
-	int		i;
+	t_cmd *new_cmd;
+	int i;
 
 	new_cmd = (t_cmd *)malloc(sizeof(t_cmd));
 	if (!new_cmd)
@@ -100,11 +100,11 @@ static t_cmd	*get_cmd(t_token **current)
 	return (new_cmd);
 }
 
-t_cmd	*create_cmd(t_obj *obj)
+t_cmd *create_cmd(t_obj *obj)
 {
-	t_token	*current;
-	t_cmd	*head;
-	t_cmd	*new_cmd;
+	t_token *current;
+	t_cmd *head;
+	t_cmd *new_cmd;
 
 	current = obj->token;
 	head = get_cmd(&current);
