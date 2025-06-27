@@ -32,7 +32,7 @@ char	*get_env_variable(char **env, char *variable)
 	return (NULL);
 }
 
-char	*get_absolute_path(t_cmd *cmd, t_obj *obj)
+char	*get_absolute_path(t_cmd *cmd, char **env)
 {
 	int		i;
 	char	*exec;
@@ -43,7 +43,7 @@ char	*get_absolute_path(t_cmd *cmd, t_obj *obj)
 		return (NULL);
 	if (cmd->argv[0][0] == '/' || ft_strncmp(cmd->argv[0], "./", 2) == 0)
 		return (ft_strdup(cmd->argv[0]));
-	paths = ft_split(get_env_variable(obj->env, "PATH"), ':');
+	paths = ft_split(get_env_variable(env, "PATH"), ':');
 	if (!paths)
 		return (NULL);
 	i = 0;

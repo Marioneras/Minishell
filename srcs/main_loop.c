@@ -78,7 +78,7 @@ int	main(int argc, char *argv[], char **envp)
 			}
 			add_history(obj.input);
 			parsing(&obj, envp);
-			/* execute(&obj); */
+			execute(&obj);
 		}
 	}
 	return(obj.exit_code);

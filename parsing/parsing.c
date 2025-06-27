@@ -126,7 +126,7 @@ void	parsing(t_obj *obj, char **envp)
 		{
 			racine_ex(obj->token, envp);
 			obj->cmd = create_cmd(obj);
-			print_cmd(obj->cmd);
+			/* print_cmd(obj->cmd); */
 		}
 		free_token(obj->token);
 	}

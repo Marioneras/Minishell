@@ -23,6 +23,9 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <fcntl.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 
 # define PATH_MAX 4096
 
@@ -123,10 +126,12 @@ char						*get_varname(char *str, int *i, int start);
 
 /* ********* execute ********** */
 void						execute(t_obj *obj);
-char						*get_absolute_path(t_cmd *cmd, t_obj *obj);
+char						*get_absolute_path(t_cmd *cmd, char **env);
 char						*get_env_variable(char **env, char *variable);
-void						set_redirections(t_obj *obj);
+void						set_redirections(t_obj *obj, int *infile,
+								int *outfile);
 void						create_files(t_obj *obj);
+void						open_fd(t_cmd *cmd, int *input_fd, int *output_fd);
 
 /* ***** linked list utils **** */
 t_redirections				*append_redirections(t_redirections *head,
